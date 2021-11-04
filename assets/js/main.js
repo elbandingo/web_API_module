@@ -1,11 +1,25 @@
-var buttonE1 = document.querySelector("#save-task"); //creating element to call based on HTML ID
+var formE1 = document.querySelector("#save-task"); //creating element to call based on HTML ID
 var tasksToDoE1 = document.querySelector("#tasks-to-do"); //creating element to call based on HTML ID
-var createTaskHandler = function() { //function created to add the item when button is clicked
-    var listItemE1 = document.createElement("li");
-    listItemE1.className = "task-item";
-    listItemE1.textContent = "this is a new task";
+var taskFormHandler = function(event) { //function created to add the item when button is clicked
+    //prevent the page from reloading everytime
+    event.preventDefault();
+    var taskNameInput = document.querySelector("input[name='task-name']").value; //obtain the value that the user types into the box
+    var taskTypeInput = document.querySelector("select[name='task-type']").value; //obtain the selection from the dropdown menu
+    var listItemE1 = document.createElement("li"); //create an LI when the item gets added
+    listItemE1.className = "task-item"; //adds a style class to make it easier to style
+
+    //create a div to hold task info and add to list item
+    var taskInfoE1 = document.createElement("div");
+    //give the Div a class name
+    taskInfoE1.className = "task-info";
+    //add the HTML content to the DIV
+    taskInfoE1.innerHTML = "<h3 class='task-name'>" + taskNameInput + "</h3><span class='task-type'>" + taskTypeInput + "</span>";
+    listItemE1.appendChild(taskInfoE1);
+
+    //add entire list item to list
     tasksToDoE1.appendChild(listItemE1); // appends the child elements based on its parent called in the variable at the top
-}
+
+};
 
 
-buttonE1.addEventListener("click", createTaskHandler)
+formE1.addEventListener("click", taskFormHandler)
