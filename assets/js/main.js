@@ -3,6 +3,8 @@ var taskIdCounter = 0;
 var formE1 = document.querySelector("#save-task"); //creating element to call based on HTML ID
 var tasksToDoE1 = document.querySelector("#tasks-to-do"); //creating element to call based on HTML ID
 var pageContentEl = document.querySelector("#page-content");
+var tasksInProgressEl = document.querySelector("#tasks-in-progress");
+var tasksCompletedEl = document.querySelector("#tasks-completed");
 
 var taskFormHandler = function(event) { //function created to add the item when button is clicked
     //prevent the page from reloading everytime
@@ -135,7 +137,7 @@ var deleteTask = function(taskId) {
     console.log(taskSelected);
     taskSelected.remove();
 
-}
+};
 
 //function created to edit a task. it will send the contents back up to top of the form, and then change wording to SAVE task on the button
 var editTask = function(taskId) {
@@ -151,7 +153,29 @@ var editTask = function(taskId) {
     document.querySelector("#save-task").textContent = "Save Task";
     formE1.setAttribute("data-task-id", taskId);
 
-}
+};
+
+var taskStatusChangeHandler = function(event) {
+    //get the task Item Id
+    var taskId = event.target.getAttribute("data-task-id");
+
+    //get the current selection options value, convert it to lowercase
+    var statusValue = event.target.value.toLowerCase();
+
+    //find the parent task item element based on the ID
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    //move the items to the child UL element in the appropriate column
+    if (statusValue === "to do") {
+        tasksToDoE1.appendChild(taskSelected);
+    }
+    else if(statusValue === "in progress") {
+        tasksInProgressEl.appendChild(taskSelected);
+    }
+    else if(statusValue === "completed") {
+        tasksCompletedEl.appendChild(taskSelected);
+    }
+};
 
 
 //function to finish editing a task. This will select the ID you are working on, update it, then clear the form and start new
@@ -167,3 +191,6 @@ var completeEditTask = function(taskName, taskType, taskId) {
 }
 //method for recognizing the Delete and Edit buttons on click
 pageContentEl.addEventListener("click", taskButtonHandler);
+
+//method for changing the category of the task, to move it elsewhere
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
