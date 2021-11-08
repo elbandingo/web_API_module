@@ -254,5 +254,5 @@ pageContentEl.addEventListener("change", taskStatusChangeHandler);
 //local storage method to keep persistence with data when refreshing
 
 var saveTasks = function() {
-    localStorage.setItem("tasks", tasks);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
