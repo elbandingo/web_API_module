@@ -2,6 +2,7 @@
 var taskIdCounter = 0;
 var formE1 = document.querySelector("#save-task"); //creating element to call based on HTML ID
 var tasksToDoE1 = document.querySelector("#tasks-to-do"); //creating element to call based on HTML ID
+var pageContentEl = document.querySelector("#page-content");
 var taskFormHandler = function(event) { //function created to add the item when button is clicked
     //prevent the page from reloading everytime
     event.preventDefault();
@@ -96,5 +97,27 @@ var createTaskActions = function(taskId) {
 
 }
 
+//method for recognizing the user clicking ADD TASK
+formE1.addEventListener("click", taskFormHandler);
 
-formE1.addEventListener("click", taskFormHandler)
+
+var taskButtonHandler = function(event) {
+    console.log(event.target);
+
+    if(event.target.matches(".delete-btn")) {
+        var taskId = event.target.getAttribute("data-task-id");
+        deleteTask(taskId);
+    }
+
+};
+
+//function created to remove a task, when delete button is clicked. this selects the specific data task assigned in the loop
+var deleteTask = function(taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    console.log(taskSelected);
+    taskSelected.remove();
+
+}
+
+//method for recognizing the Delete and Edit buttons on click
+pageContentEl.addEventListener("click", taskButtonHandler);
