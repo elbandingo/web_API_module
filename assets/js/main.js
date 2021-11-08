@@ -3,6 +3,7 @@ var taskIdCounter = 0;
 var formE1 = document.querySelector("#save-task"); //creating element to call based on HTML ID
 var tasksToDoE1 = document.querySelector("#tasks-to-do"); //creating element to call based on HTML ID
 var pageContentEl = document.querySelector("#page-content");
+
 var taskFormHandler = function(event) { //function created to add the item when button is clicked
     //prevent the page from reloading everytime
     event.preventDefault();
@@ -16,6 +17,16 @@ var taskFormHandler = function(event) { //function created to add the item when 
 
     //clear out the form for when button is clicked/added
     document.querySelector("#task-form").reset();
+
+    //set the parameters for when editing is now occurring
+    var isEdit = formE1.hasAttribute("data-task-id");
+    //if it has a data attribute, then we are editing
+    if(isEdit) {
+        var taskId = formE1.getAttribute("data-task-id");
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
+    }
+    //if there is no data attribute, we want the form to be treated as a new entry
+    else {
     //assuming there is data, pack it up into an object for use now, and future use
     var taskDataObj = {
         name: taskNameInput,
@@ -24,7 +35,7 @@ var taskFormHandler = function(event) { //function created to add the item when 
 
     // send it as an argument to createTaskE1
     createTaskE1(taskDataObj);
-
+    }
 
 };
 
@@ -126,6 +137,7 @@ var deleteTask = function(taskId) {
 
 }
 
+//function created to edit a task. it will send the contents back up to top of the form, and then change wording to SAVE task on the button
 var editTask = function(taskId) {
     console.log("editing task #" + taskId);
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
@@ -139,6 +151,19 @@ var editTask = function(taskId) {
     document.querySelector("#save-task").textContent = "Save Task";
     formE1.setAttribute("data-task-id", taskId);
 
+}
+
+
+//function to finish editing a task. This will select the ID you are working on, update it, then clear the form and start new
+var completeEditTask = function(taskName, taskType, taskId) {
+
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+    alert("Tasks Updated!");
+    //clear the current ID, and then reset the button text to add task
+    formE1.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task";
 }
 //method for recognizing the Delete and Edit buttons on click
 pageContentEl.addEventListener("click", taskButtonHandler);
