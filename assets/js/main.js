@@ -6,6 +6,9 @@ var pageContentEl = document.querySelector("#page-content");
 var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 var tasksCompletedEl = document.querySelector("#tasks-completed");
 
+//create an array for the tasks, used for localStorage
+var tasks = [];
+
 var taskFormHandler = function(event) { //function created to add the item when button is clicked
     //prevent the page from reloading everytime
     event.preventDefault();
@@ -32,7 +35,8 @@ var taskFormHandler = function(event) { //function created to add the item when 
     //assuming there is data, pack it up into an object for use now, and future use
     var taskDataObj = {
         name: taskNameInput,
-        type: taskTypeInput
+        type: taskTypeInput,
+        status: "to do"
     };
 
     // send it as an argument to createTaskE1
@@ -60,8 +64,17 @@ var createTaskE1 = function(taskDataObj) {
     listItemE1.appendChild(taskActionsEl);
     tasksToDoE1.appendChild(listItemE1);
 
+    //set the taskDataObject id to equal the current counter of the task ID
+    taskDataObj.id = taskIdCounter;
+    tasks.push(taskDataObj);
+    console.log(tasks);
+
     //increase the task counter, so the next time something is added, a new unique value is assigned
     taskIdCounter++;
+
+    //testing to see if the console can capture current object state
+    console.log(taskDataObj);
+    console.log(taskDataObj.status);
 
 }
 
@@ -137,6 +150,19 @@ var deleteTask = function(taskId) {
     console.log(taskSelected);
     taskSelected.remove();
 
+    //create a new array to hold updated list of tasks
+    var updatedTaskArr = [];
+
+    //loop throug the current tasks
+    for (var i = 0; i < tasks.length; i++) {
+        //if the current index does not match the value of task ID, lets keep that task
+        if(tasks[i].id !== parseInt(taskId)) {
+            updatedTaskArr.push(tasks[i]);
+        }
+    }
+
+    //re-assign the tasks array to be the same as the updatedTaskArr
+    tasks = updatedTaskArr;
 };
 
 //function created to edit a task. it will send the contents back up to top of the form, and then change wording to SAVE task on the button
@@ -155,6 +181,7 @@ var editTask = function(taskId) {
 
 };
 
+//function to move the task to the appropriate column, based on your select decision
 var taskStatusChangeHandler = function(event) {
     //get the task Item Id
     var taskId = event.target.getAttribute("data-task-id");
@@ -175,6 +202,16 @@ var taskStatusChangeHandler = function(event) {
     else if(statusValue === "completed") {
         tasksCompletedEl.appendChild(taskSelected);
     }
+
+    //update the tasks in tasks array
+    for (var i = 0; i < tasks.length; i++) {
+        if(tasks[i].id === parseInt(taskId)){
+            tasks[i].status = statusValue;
+            
+        }
+    }
+    console.log(tasks);
+    
 };
 
 
@@ -184,10 +221,20 @@ var completeEditTask = function(taskName, taskType, taskId) {
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
     taskSelected.querySelector("h3.task-name").textContent = taskName;
     taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    //for loop to update the array of tasks object, and update its content
+    for(var i = 0; i < tasks.length; i++) {
+        if (tasks[i] === parseInt(taskId)) {
+            tasks[i].name = taskName;
+            tasks[i].type = taskType;
+        }
+    };
+
     alert("Tasks Updated!");
     //clear the current ID, and then reset the button text to add task
     formE1.removeAttribute("data-task-id");
     document.querySelector("#save-task").textContent = "Add Task";
+
 }
 //method for recognizing the Delete and Edit buttons on click
 pageContentEl.addEventListener("click", taskButtonHandler);
