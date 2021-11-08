@@ -76,6 +76,9 @@ var createTaskE1 = function(taskDataObj) {
     console.log(taskDataObj);
     console.log(taskDataObj.status);
 
+    //call localStorage function to load items from storage
+    saveTasks();
+
 }
 
 //function declaration for creating the edit/delete/dropdowns and buttons for each task added
@@ -163,6 +166,9 @@ var deleteTask = function(taskId) {
 
     //re-assign the tasks array to be the same as the updatedTaskArr
     tasks = updatedTaskArr;
+
+    //add localstorage function
+    saveTasks();
 };
 
 //function created to edit a task. it will send the contents back up to top of the form, and then change wording to SAVE task on the button
@@ -211,7 +217,8 @@ var taskStatusChangeHandler = function(event) {
         }
     }
     console.log(tasks);
-    
+    //add localstorage function
+    saveTasks();
 };
 
 
@@ -229,6 +236,8 @@ var completeEditTask = function(taskName, taskType, taskId) {
             tasks[i].type = taskType;
         }
     };
+    //add local storage function
+    saveTasks()
 
     alert("Tasks Updated!");
     //clear the current ID, and then reset the button text to add task
@@ -241,3 +250,9 @@ pageContentEl.addEventListener("click", taskButtonHandler);
 
 //method for changing the category of the task, to move it elsewhere
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+
+//local storage method to keep persistence with data when refreshing
+
+var saveTasks = function() {
+    localStorage.setItem("tasks", tasks);
+}
